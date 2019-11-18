@@ -20,21 +20,19 @@ template <typename T>
 void leer(const string &file_name ){
     int num_rec = 0, filas=0, columnas=0;
     vector<Rectangulo<T>> vec;
-
     ifstream file_rectangulos(file_name);
     if(!file_rectangulos.is_open()){
         cout << "ERROR"<<endl;
     }
     else {
         file_rectangulos>>num_rec>>filas>>columnas;
-        //cout << num_rec << " " << filas << " " << columnas << " " << endl;
         for(int i=0; i<num_rec; i++){
             Rectangulo<T> rec{};
             file_rectangulos>>rec.A>>rec.x>>rec.y>>rec.filas>>rec.columnas;
             if(rec.A=='A')
                 vec.push_back(rec);
             else
-                cout<<"No se encontó esa acción";
+                cout<<"No se encontró esa acción";
         }
     }
     file_rectangulos.close();
@@ -84,8 +82,8 @@ template <typename T>
 vector<Rectangulo<T>> valido(vector<Rectangulo<T>> rectangulos){
     for(size_t i=0; i<rectangulos.size(); i++ ){
         for(size_t j=1+i; j<rectangulos.size(); j++){
-            if(interseca(rectangulos[i],rectangulos[j])){
-                rectangulos.erase(rectangulos.begin()+j);
+            if(interseca(rectangulos.at(i),rectangulos.at(j))){
+                rectangulos.erase(begin(rectangulos)+j);
             }
         }
     }
@@ -101,9 +99,8 @@ void escribir(const char *file_name, vector<Rectangulo<T>> vec){
     for(auto &rec:vec) {
         file_rectangulos<<rec<<endl;
     }
+    file_rectangulos.close();
 }
-
-
 
 
 
