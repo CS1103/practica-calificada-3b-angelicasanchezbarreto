@@ -1,31 +1,14 @@
 //
 // Created by lica-pc on 11/17/19.
 //
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include <algorithm>
 #include <iterator>
 #include <cstring>
-
+#include "rectangulo.cpp"
 #ifndef PC3B_FUNCIONES_H
 #define PC3B_FUNCIONES_H
-
-using namespace std;
-
-template <typename T>
-struct Rectangulo{
-    T x, y, filas, columnas;
-    char A;
-    //Rectangulo()= default;
-    bool operator < (const Rectangulo<T> & rec) const {
-        return x < rec.x;
-    }
-    friend ostream &operator<<( ostream &file_salida, const Rectangulo &Rec ) {
-        file_salida <<Rec.A<<" "<<Rec.x<<" "<<Rec.y<<" "<<Rec.filas<<" "<<Rec.columnas;
-        return file_salida;
-    }
-};
 
 bool valido();
 void leer();
@@ -49,14 +32,17 @@ void leer(const string &file_name ){
         for(int i=0; i<num_rec; i++){
             Rectangulo<T> rec{};
             file_rectangulos>>rec.A>>rec.x>>rec.y>>rec.filas>>rec.columnas;
-            vec.push_back(rec);
+            if(rec.A=='A')
+                vec.push_back(rec);
+            else
+                cout<<"No se encontó esa acción";
         }
     }
     file_rectangulos.close();
     cout<<"Rectangulos con intersecciones:"<<endl;
     imprimir(vec);
     cout<<"Rectangulos sin intersecciones:"<<endl;
-    valido(vec);
+    vec = valido(vec);
     sort(vec.begin(), vec.end());
     cout<<"Rectangulos sin intersecciones ordenados:"<<endl;
     imprimir(vec);
@@ -67,32 +53,37 @@ template <typename T>
 void imprimir(vector<Rectangulo<T>> vec){
     for(auto &rec: vec)
         cout<<rec.A<<" "<<rec.x<<" "<<rec.y<<" "<<rec.filas<<" "<<rec.columnas<<endl;
-
     cout << endl;
 }
 
 
 template <typename Rectangulo>
-bool interseca(Rectangulo l1, Rectangulo r1, Rectangulo l2, Rectangulo r2)
-{
-    if (l1.x > r2.filas+r2.x-1 || l2.x > r1.filas+r1.x-1)
-        return false;
+bool interseca(Rectangulo rec1, Rectangulo rec2){
+    int x1_left = rec1.x;
+    int y1_left = rec1.y;
+    int x1_right = rec1.filas+x1_left;
+    int y1_right = rec1.columnas+y1_left;
+    int x2_left = rec2.x;
+    int y2_left = rec2.y;
+    int x2_right = rec2.filas+x2_left;
+    int y2_right = rec2.columnas+y2_left;
 
-    if (l1.y < r2.columnas+r2.y-1 || l2.y < r1.columnas+r1.y-1)
-        return false;
+    return (x1_left == x2_left && y1_left == y2_left)
+           && (x2_right > x1_right || y2_right > y1_right || x1_right > x2_right || y1_right > y2_right  );
 
-    return true;
 }
+
 template <typename T>
-void valido(vector<Rectangulo<T>> rectangulos){
+vector<Rectangulo<T>> valido(vector<Rectangulo<T>> rectangulos){
     for(size_t i=0; i<rectangulos.size(); i++ ){
         for(size_t j=1+i; j<rectangulos.size(); j++){
-            if(interseca(rectangulos[i],rectangulos[i],rectangulos[j],rectangulos[j])){
-                rectangulos.erase(rectangulos.begin()+j-1);
+            if(interseca(rectangulos[i],rectangulos[j])){
+                rectangulos.erase(rectangulos.begin()+j);
             }
         }
     }
     imprimir(rectangulos);
+    return rectangulos;
 }
 
 
