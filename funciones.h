@@ -5,6 +5,8 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <iterator>
+#include <cstring>
 
 #ifndef PC3B_FUNCIONES_H
 #define PC3B_FUNCIONES_H
@@ -19,6 +21,10 @@ struct Rectangulo{
     bool operator < (const Rectangulo<T> & rec) const {
         return x < rec.x;
     }
+    friend ostream &operator<<( ostream &file_salida, const Rectangulo &Rec ) {
+        file_salida <<Rec.A<<" "<<Rec.x<<" "<<Rec.y<<" "<<Rec.filas<<" "<<Rec.columnas;
+        return file_salida;
+    }
 };
 
 bool valido();
@@ -26,6 +32,7 @@ void leer();
 void imprimir();
 void ordenar();
 bool interseca();
+void escribir();
 
 template <typename T>
 void leer(const string &file_name ){
@@ -46,11 +53,14 @@ void leer(const string &file_name ){
         }
     }
     file_rectangulos.close();
+    cout<<"Rectangulos con intersecciones:"<<endl;
     imprimir(vec);
-    sort(vec.begin(), vec.end());
-    imprimir(vec);
+    cout<<"Rectangulos sin intersecciones:"<<endl;
     valido(vec);
-
+    sort(vec.begin(), vec.end());
+    cout<<"Rectangulos sin intersecciones ordenados:"<<endl;
+    imprimir(vec);
+    escribir("rectangulos2.out", vec);
 }
 
 template <typename T>
@@ -85,6 +95,15 @@ void valido(vector<Rectangulo<T>> rectangulos){
     imprimir(rectangulos);
 }
 
+
+
+template <typename T>
+void escribir(const char *file_name, vector<Rectangulo<T>> vec){
+    ofstream file_rectangulos(file_name);
+    for(auto &rec:vec) {
+        file_rectangulos<<rec<<endl;
+    }
+}
 
 
 
