@@ -10,11 +10,10 @@
 #ifndef PC3B_FUNCIONES_H
 #define PC3B_FUNCIONES_H
 
-bool valido();
 void leer();
 void imprimir();
-void ordenar();
 bool interseca();
+bool valido();
 void escribir();
 
 template <typename T>
@@ -68,9 +67,17 @@ bool interseca(Rectangulo rec1, Rectangulo rec2){
     int x2_right = rec2.filas+x2_left;
     int y2_right = rec2.columnas+y2_left;
 
-    return (x1_left == x2_left && y1_left == y2_left)
-           && (x2_right > x1_right || y2_right > y1_right || x1_right > x2_right || y1_right > y2_right  );
+    if( (x1_left == x2_left && y1_left == y2_left)
+           && (x2_right > x1_right || y2_right > y1_right || x1_right > x2_right || y1_right > y2_right ) )
+        return true;
 
+    if(x1_left>x2_right || x2_left>x1_right)
+        return false;
+
+    if(y1_left<y2_right || y2_left<y1_right)
+        return false;
+
+    return false;
 }
 
 template <typename T>
